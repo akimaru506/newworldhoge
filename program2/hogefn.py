@@ -3,10 +3,10 @@ import tweepy
 
 class twittercn (object):
   def get_apifn(self):
-    api_key='3SrkF5dAxQYuyda0aLLYlQ'
-    api_secret='wqg75BB48ewH1wLFA5uFs8EbNEPfCCd48r9OVlFCV1k'
-    access_token='1688027426-aXf1xh8rvsdQAQQGMnbFVGzKTE1c0kmVa4UFWHm'
-    access_token_secret='K3yODBfJVqEzjpPwioc1MmftTIJPz4JBvTYygaqWykVrg'
+    api_key=''
+    api_secret=''
+    access_token=''
+    access_token_secret=''
 
     connect=tweepy.OAuthHandler(api_key,api_secret)
     connect.set_access_token(access_token,access_token_secret)
