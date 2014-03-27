@@ -3,10 +3,10 @@ import tweepy
 
 class twittercn (object):
   def get_apifn(self):
-    api_key=''
-    api_secret=''
-    access_token=''
-    access_token_secret=''
+    api_key='UP9jACCD0cNYWjdNgH8XHQ'
+    api_secret='IFugBoNp7JyWxR1iXKWSBf0Wegz9IifToEFBMzkkg4'
+    access_token='1688027426-8jGmf0n4LXTfztgjvpzy8ixIR98I80pVdq6nG2s'
+    access_token_secret='vEkcby4OBa82OUgrw6vdV7yJfPt6y2aRSNr6BcMh347GB'
 
     connect=tweepy.OAuthHandler(api_key,api_secret)
     connect.set_access_token(access_token,access_token_secret)
@@ -15,34 +15,31 @@ class twittercn (object):
 
 class deal_strs (object):
   def __init__(self,s):
+    print s
     self.strs=s
   def rem_uname(self):
     char_list=list(self.strs)
-    print char_list
     while u'@' in char_list:
       un_num=char_list.index(u'@')
       h=un_num
-      print un_num
 #例えば、この2行後の部分でindex is out of rangeとなった場合、user名の終わりがwhile文の条件に指定している文字でない可能性がある。
-      print h
       while char_list[h]!=u' ' and char_list[h]!=u')' and char_list[h]!=u':':
         char_list[h]=u'\\'
         if (h+1)==len(char_list):
           break
         h+=1
-        print h
       char_list[h]=u'\\'
     return char_list
 
   def rem_address(self):
     char_list=list(self.strs)
     while u'h' in char_list:
+      print 'yes!'
       ht_num=char_list.index(u'h')
       h=ht_num
-      if char_list[h+1]==u't' and char_list[h+2]==u't' and char_list[h+3]==u'p' and (char_list[h+4]==u':' or char_list[h+4]==u's') :
+      if char_list[h+1]==u't' and char_list[h+2]==u't' and char_list[h+3]==u'p' :
         while char_list[h]!=u' ' and char_list[h]!=u')'  and char_list[h]!=u'#':
           char_list[h]=u'\\'
-          print '**'
           print h
           print '**'
           print len(char_list)
@@ -50,12 +47,11 @@ class deal_strs (object):
           if (h+1)==len(char_list):
             break
           h+=1
-          print h
-          print '**'
         char_list[h]=u'\\'
       else :
-        break
+        char_list[h]=u'\\'
     return char_list
+
   def rem_unneed(self):
     delchar_pre=self.strs
     str_main1=delchar_pre.replace("'","")
@@ -72,10 +68,6 @@ class deal_strs (object):
     fname=self.strs
     f=open(fname,'r')
     chardata=f.read()+'\\'
-    #char_list=list(chardata)
-    print chardata
-    print '\n'
-    #print char_list
     chardata=chardata.replace("@","")
     i=0
     username=''
