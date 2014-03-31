@@ -73,15 +73,36 @@ while str_main6[i]!="\\":
   worddic['name']=wordname
   worddic['part']=part_speech
   worddic['pmore']=part_more
+  worddic['gram']=''
+#actionはその語がされること。
+  worddic['action']=''
   wordlist.append(worddic)
   wordname=""
   part_speech=""
   part_more=""
   worddic={}
 
+x=0
+while x+1<len(wordlist):
+  if wordlist[x]['part']==u'名詞' and  (wordlist[x+1]['name']==u'を' and wordlist[x+1]['part']==u'助詞'):
+    wordlist[x]['gram']='o'
+    print '目的語TRUE'
+    y=x
+    while y<len(wordlist):
+      if wordlist[y]['part']==u'動詞':
+        wordlist[x]['action']=wordlist[y]['name']
+        break
+      y+=1
+  if wordlist[x]['part']==u'名詞' and ((wordlist[x+1]['name']==u'が' and  wordlist[x+1]['pmore']==u'格助詞') or (wordlist[x+1]['name']==u'は' and wordlist[x+1]['pmore']==u'係助詞')):
+    wordlist[x]['gram']='s'
+    print '主語TRUE'
+
+  x+=1
+
+
 for n in wordlist:
  #文字はすでに読める状態なので、１行下の文で文字の変換は不要。エラー原因はプレースホルダを使おうとして文法間違いしたものによるらしい
-  sql = u"insert into words (wordname,part,part_more) values('"+n['name']+"','"+n['part']+"','"+n['pmore']+"')"
+  sql = u"insert into words (wordname,part,part_more,gram,action) values('"+n['name']+"','"+n['part']+"','"+n['pmore']+"','"+n['gram']+"','"+n['action']+"')"
   cursor.execute(sql)
   connector.commit()
 cursor.close()
