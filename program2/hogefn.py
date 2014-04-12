@@ -12,10 +12,10 @@ class twittercn (object):
   '''Twitter処理関係の関数をまとめています。'''
   def get_apifn(self):
     '''APIキー、アクセストークンの設定をしたクラスを返します。引数不要'''
-    api_key='UP9jACCD0cNYWjdNgH8XHQ'
-    api_secret='IFugBoNp7JyWxR1iXKWSBf0Wegz9IifToEFBMzkkg4'
-    access_token='1688027426-8jGmf0n4LXTfztgjvpzy8ixIR98I80pVdq6nG2s'
-    access_token_secret='vEkcby4OBa82OUgrw6vdV7yJfPt6y2aRSNr6BcMh347GB'
+    api_key=''
+    api_secret=''
+    access_token=''
+    access_token_secret=''
 
     connect=tweepy.OAuthHandler(api_key,api_secret)
     connect.set_access_token(access_token,access_token_secret)
@@ -89,6 +89,7 @@ def mecabact(chardata):
   #actionはその語がされること。
     worddic['action']=''
     worddic['nature']=''
+    worddic['level']=''
     wordlist.append(worddic)
     wordname=""
     part_speech=""
@@ -105,6 +106,7 @@ class searchsentence(object):
     '''hogefn.mecabact()で作られたリストから目的語、動詞、主語の判定をし、その結果をhogefn.mecabact()で返されたリストにディクショナリとして追加します。引数にはhogefn.mecabact()で渡されたリストを指定します。'''
     x=0
     keiyousi=''
+    hukusi=''
     while x+1<len(wordlist):
       if wordlist[x]['part']==u'名詞' and  (wordlist[x+1]['name']==u'を' and wordlist[x+1]['part']==u'助詞'):
         wordlist[x]['gram']='o'
@@ -123,6 +125,11 @@ class searchsentence(object):
       if wordlist[x]['part']==u'名詞':
         wordlist[x]['nature']=keiyousi
         keiyousi=''
+      if wordlist[x]['part']==u'副詞':
+        hukusi+=wordlist[x]['name']+'/'
+      if wordlist[x]['part']==u'動詞' or wordlist[x]['part']==u'形容詞' or wordlist[x]['part']==u'形容動詞':
+        wordlist[x]['level']=hukusi
+        hukusi=''
       x+=1
     return wordlist
 
@@ -137,7 +144,7 @@ class mydb (object):
     '''hogefn.searchsentence().grammer()で返されたリストをデータベースに登録します。引数にはhogefn.searchsentence().grammer()で渡されたリストを指定'''
     for n in wordlist:
      #文字はすでに読める状態なので、１行下の文で文字の変換は不要。エラー原因はプレースホルダを使おうとして文法間違いしたものによるらしい
-      sql = u"insert into words (wordname,part,part_more,gram,action,nature) values('"+n['name']+"','"+n['part']+"','"+n['pmore']+"','"+n['gram']+"','"+n['action']+"','"+n['nature']+"')"
+      sql = u"insert into words (wordname,part,part_more,gram,action,nature,level) values('"+n['name']+"','"+n['part']+"','"+n['pmore']+"','"+n['gram']+"','"+n['action']+"','"+n['nature']+"','"+n['level']+"')"
       self.cursor.execute(sql)
       self.connector.commit()
 
