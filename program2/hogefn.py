@@ -4,8 +4,11 @@ import MySQLdb
 import codecs
 import MeCab
 
+
 class twittercn (object):
+  '''Twitter処理関係の関数をまとめています。'''
   def get_apifn(self):
+	'''APIキー、アクセストークンの設定をしたクラスを返します。引数不要'''
     api_key='UP9jACCD0cNYWjdNgH8XHQ'
     api_secret='IFugBoNp7JyWxR1iXKWSBf0Wegz9IifToEFBMzkkg4'
     access_token='1688027426-8jGmf0n4LXTfztgjvpzy8ixIR98I80pVdq6nG2s'
@@ -17,6 +20,7 @@ class twittercn (object):
     return t
 
 def mecabact(chardata):
+  '''MeCabで品詞分解し、単語と品詞をディクショナリにまとめたリストを返します。引数には処理したい文字列を指定します。'''
   tagger=MeCab.Tagger('mecabrc')
   result=tagger.parse(chardata)
 
@@ -92,9 +96,9 @@ def mecabact(chardata):
 
 
 class searchsentence(object):
-
+  '''文の上での単語の役割の判定等をする関数をまとめています。'''
   def grammer(self,wordlist):
-
+    '''hogefn.mecabact()で作られたリストから目的語、動詞、主語の判定をし、その結果をhogefn.mecabact()で返されたリストにディクショナリとして追加します。引数にはhogefn.mecabact()で渡されたリストを指定します。'''
     x=0
     while x+1<len(wordlist):
       if wordlist[x]['part']==u'名詞' and  (wordlist[x+1]['name']==u'を' and wordlist[x+1]['part']==u'助詞'):
@@ -115,12 +119,14 @@ class searchsentence(object):
     return wordlist
 
 class mydb (object):
-
+  '''MySQLへの接続等の処理の関数をまとめています。引数不要'''
   def __init__(self):
+    '''MySQLのカーソルを作成します。'''
     self.connector = MySQLdb.connect(host="localhost", db="newworldhoge", user="newsekaim", passwd="iq1nS1euaw", charset="utf8")
     self.cursor = self.connector.cursor()
 
   def addwords(self,wordlist):
+    '''hogefn.searchsentence().grammer()で返されたリストをデータベースに登録します。引数にはhogefn.searchsentence().grammer()で渡されたリストを指定'''
     for n in wordlist:
      #文字はすでに読める状態なので、１行下の文で文字の変換は不要。エラー原因はプレースホルダを使おうとして文法間違いしたものによるらしい
       sql = u"insert into words (wordname,part,part_more,gram,action) values('"+n['name']+"','"+n['part']+"','"+n['pmore']+"','"+n['gram']+"','"+n['action']+"')"
@@ -128,16 +134,19 @@ class mydb (object):
       self.connector.commit()
 
   def closedb(self):
+	'''データベースへの接続を閉じます。引数不要。'''
     self.cursor.close()
     self.connector.close()
 
 
 
 class deal_strs (object):
+  '''特定種類の文字列を取り除く関数を集めています。引数には処理したい文字列を指定。'''
   def __init__(self,s):
     print s
     self.strs=s
   def rem_uname(self):
+    '''Twitterのツイートなどから@で始まるユーザーネームを取り除きます。引数不要。'''
     char_list=list(self.strs)
     while u'@' in char_list:
       un_num=char_list.index(u'@')
@@ -152,6 +161,7 @@ class deal_strs (object):
     return char_list
 
   def rem_address(self):
+    '''http://などから始まるアドレスを取り除きます。引数不要。'''
     char_list=list(self.strs)
     while u'h' in char_list:
       print 'yes!'
@@ -173,6 +183,7 @@ class deal_strs (object):
     return char_list
 
   def rem_unneed(self):
+    '''文字列をリストにした時に不要になる文字を取り除きます。引数不要。'''
     delchar_pre=self.strs
     str_main1=delchar_pre.replace("'","")
     str_main2=str_main1.replace("u","")
@@ -185,6 +196,7 @@ class deal_strs (object):
     return delchar
 
   def give_uname(self):
+    '''ツイート取得時にユーザーリストファイルから取り出すユーザ名から@を取り除きます。インスタンス生成時の引数にユーザーリストファイル名を指定。'''
     fname=self.strs
     f=open(fname,'r')
     chardata=f.read()+'\\'
