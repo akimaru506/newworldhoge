@@ -1,4 +1,7 @@
 # coding:UTF-8
+
+'''newworldhogeプログラムに必要な処理をまとめたモジュールです。'''
+
 import tweepy
 import MySQLdb
 import codecs
@@ -8,7 +11,7 @@ import MeCab
 class twittercn (object):
   '''Twitter処理関係の関数をまとめています。'''
   def get_apifn(self):
-	'''APIキー、アクセストークンの設定をしたクラスを返します。引数不要'''
+    '''APIキー、アクセストークンの設定をしたクラスを返します。引数不要'''
     api_key='UP9jACCD0cNYWjdNgH8XHQ'
     api_secret='IFugBoNp7JyWxR1iXKWSBf0Wegz9IifToEFBMzkkg4'
     access_token='1688027426-8jGmf0n4LXTfztgjvpzy8ixIR98I80pVdq6nG2s'
@@ -134,7 +137,7 @@ class mydb (object):
       self.connector.commit()
 
   def closedb(self):
-	'''データベースへの接続を閉じます。引数不要。'''
+    '''データベースへの接続を閉じます。引数不要。'''
     self.cursor.close()
     self.connector.close()
 
