@@ -25,11 +25,11 @@
 
 Please watch the help. 
 
-'''
+```
 $ python
 >>>import hogefn
 >>>help(hogefn)
-'''
+```
 
 ##Required
 
