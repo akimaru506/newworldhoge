@@ -21,6 +21,16 @@
   |...     |...  |
 
 
+##How To
+
+Please watch the help. 
+
+'''
+$ python
+>>>import hogefn
+>>>help(hogefn)
+'''
+
 ##Required
 
 - To run these programs, following things are required.  
