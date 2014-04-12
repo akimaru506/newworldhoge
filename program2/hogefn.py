@@ -88,6 +88,7 @@ def mecabact(chardata):
     worddic['gram']=''
   #actionはその語がされること。
     worddic['action']=''
+    worddic['nature']=''
     wordlist.append(worddic)
     wordname=""
     part_speech=""
@@ -103,6 +104,7 @@ class searchsentence(object):
   def grammer(self,wordlist):
     '''hogefn.mecabact()で作られたリストから目的語、動詞、主語の判定をし、その結果をhogefn.mecabact()で返されたリストにディクショナリとして追加します。引数にはhogefn.mecabact()で渡されたリストを指定します。'''
     x=0
+    keiyousi=''
     while x+1<len(wordlist):
       if wordlist[x]['part']==u'名詞' and  (wordlist[x+1]['name']==u'を' and wordlist[x+1]['part']==u'助詞'):
         wordlist[x]['gram']='o'
@@ -116,9 +118,12 @@ class searchsentence(object):
       if wordlist[x]['part']==u'名詞' and ((wordlist[x+1]['name']==u'が' and  wordlist[x+1]['pmore']==u'格助詞') or (wordlist[x+1]['name']==u'は' and wordlist[x+1]['pmore']==u'係助詞')):
         wordlist[x]['gram']='s'
         print '主語TRUE'
-
+      if wordlist[x]['part']==u'形容詞':
+        keiyousi+=wordlist[x]['name']+'/'
+      if wordlist[x]['part']==u'名詞':
+        wordlist[x]['nature']=keiyousi
+        keiyousi=''
       x+=1
-
     return wordlist
 
 class mydb (object):
@@ -132,7 +137,7 @@ class mydb (object):
     '''hogefn.searchsentence().grammer()で返されたリストをデータベースに登録します。引数にはhogefn.searchsentence().grammer()で渡されたリストを指定'''
     for n in wordlist:
      #文字はすでに読める状態なので、１行下の文で文字の変換は不要。エラー原因はプレースホルダを使おうとして文法間違いしたものによるらしい
-      sql = u"insert into words (wordname,part,part_more,gram,action) values('"+n['name']+"','"+n['part']+"','"+n['pmore']+"','"+n['gram']+"','"+n['action']+"')"
+      sql = u"insert into words (wordname,part,part_more,gram,action,nature) values('"+n['name']+"','"+n['part']+"','"+n['pmore']+"','"+n['gram']+"','"+n['action']+"','"+n['nature']+"')"
       self.cursor.execute(sql)
       self.connector.commit()
 
