@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*
+
+def main():
+    f = open('ls.txt')#語彙ファイル
+    lines1= f.readlines()
+    f.close()
+    f = open('bun.txt')#文章リスト的なものの代用  本来ならここに単語ごとに分かれた文章を入れる
+    lines2= f.readlines()
+    f.close()
+    words_dict=read(lines1)
+    frate=likes(words_dict,lines2)
+    print (frate)
+
+def read(lines1):    #語彙と好感度上下値が対応したディクショナリを作成
+
+    words_dict = {}
+    for line in lines1:
+        a=line.split(' ')
+        words_dict[a[0]]=a[1].replace('\n','')
+    return words_dict #語彙辞書を返す
+
+def likes(jisho,sentence):  #文章の中から単語を検索、好感度を処理　形容詞だのなんだのをぶち込むならここ
+    like=0
+    wlist=list(jisho.keys())
+    for line in sentence:
+        a=wlist.count(line.replace('\n',''))
+        like+=a*int(jisho.get(line.replace('\n',''),0))
+    return like #好感度の変化を返す
+
+if __name__ == '__main__':
+    main()
